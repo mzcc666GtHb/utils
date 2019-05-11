@@ -10,8 +10,8 @@
 export const platform = (() => {
     let u = navigator.userAgent
     return {
-        isMobile: !!u.match(/AppleWebKit.*Mobile.*/),          //移动终端
-        isIOS: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/),     //ios终端
+        isMobile: !!u.match(/AppleWebKit.*Mobile.*/),                  //移动终端
+        isIOS: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/),             //ios终端
         isAndroid: u.indexOf('Android') > -1 || u.indexOf('Adr') > -1, //android终端
         isIPhone: u.indexOf('iPhone') > -1,                            //是否为iPhone
         isWX: u.indexOf('MicroMessenger') > -1                         //是否微信
