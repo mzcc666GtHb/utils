@@ -1,5 +1,5 @@
 /**
- * @Description: 移动端工具函数
+ * @Description: 常用工具函数
  * @author  xuweifeng
  * @date 2019/5/9
  */
@@ -8,7 +8,6 @@
  * rem布局(基于750)
  * 建议在页面最先引入
  * 可以保证在系统字体默认放大的情况下保持布局
- * 注意:不支持某些页面上手动设置字体大小
  */
 
 export const rem = () => {
