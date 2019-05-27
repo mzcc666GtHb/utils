@@ -102,3 +102,74 @@ export const removeKbEvt = (evtObj) => {
         document.removeEventListener('focusout', evtObj.focusoutEvt)
     }
 }
+
+
+/**
+ * 分时函数
+ * @param ary       完整的数据
+ * @param fn        逻辑处理函数
+ * @param count     每次渲染的个数
+ */
+
+export const timeChunk = (ary, fn, count, inerval) => {
+    let timer,
+        start = () => {
+            for (let i = 0; i < Math.min(count || 1, ary.length); i++) {
+                let obj = ary.shift()
+                fn(obj)
+            }
+        }
+
+    return () => {
+        timer = setInterval(() => {
+            if (ary.length === 0) {
+                return clearInterval(timer)
+            }
+            start()
+        }, inerval || 200)
+    }
+
+};
+
+/**
+ * 节流函数
+ * @param fn        需要节流的函数
+ * @param interval  时间间隔
+ */
+
+export const throttle = (func, interval) => {
+    let timer,
+        firstTime = true
+    return function () {
+        let args = arguments,
+            self = this
+        if (firstTime) {
+            func.apply(self, args)
+            return firstTime = false
+        }
+        if (timer) {
+            return false
+        }
+        timer = setTimeout(() => {
+            clearTimeout(timer)
+            timer = null
+            func.apply(self, args)
+        }, interval || 500)
+    }
+}
+
+
+/**
+ * 防抖函数
+ * @param 需要防抖的函数
+ * @param 等待时间
+ */
+export const debounce = (func, wait) => {
+    let timeout
+    return function () {
+        clearTimeout(timeout)
+        timeout = setTimeout(() => {
+            func.apply(this, arguments)
+        }, wait || 500)
+    }
+}
