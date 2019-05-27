@@ -147,14 +147,14 @@ export const throttle = (func, interval) => {
             func.apply(self, args)
             return firstTime = false
         }
-        if (timer) {
-            return false
+        if (!timer) {
+            timer = setTimeout(() => {
+                clearTimeout(timer)
+                timer = null
+                func.apply(self, args)
+            }, interval || 500)
         }
-        timer = setTimeout(() => {
-            clearTimeout(timer)
-            timer = null
-            func.apply(self, args)
-        }, interval || 500)
+
     }
 }
 
@@ -167,9 +167,10 @@ export const throttle = (func, interval) => {
 export const debounce = (func, wait) => {
     let timeout
     return function () {
+        let self = this
         clearTimeout(timeout)
-        timeout = setTimeout(() => {
-            func.apply(this, arguments)
+        timeout = setTimeout(function () {
+            func.apply(self, arguments)
         }, wait || 500)
     }
 }

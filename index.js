@@ -5,7 +5,7 @@ const count = () => {
     console.log(123)
 }
 
-window.onresize = debounce(() => {
+window.onresize = throttle(() => {
     console.log(12312);
 })
 
