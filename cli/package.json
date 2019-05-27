@@ -1,0 +1,30 @@
+{
+  "name": "front-generator",
+  "version": "1.0.4",
+  "description": "前端模板生成器",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "mfg": "index.js"
+  },
+  "keywords": [],
+  "author": {
+    "name": "xuweifeng",
+    "email": "23123"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "commander": "^2.19.0",
+    "git-clone-promise": "^1.0.0",
+    "inquirer": "^6.2.2",
+    "log-symbols": "^2.2.0",
+    "ora": "^3.4.0",
+    "shelljs": "^0.8.3"
+  },
+  "publishConfig": {
+    "registry": "npm地址"
+  }
+}
