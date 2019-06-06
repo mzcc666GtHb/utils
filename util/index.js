@@ -198,6 +198,12 @@ export const bridge = (() => {
         }, 0)
     }
     return {
+         /**
+           * h5主动调用ios注册的方法
+           * @param name ios提供的方法
+           * @param data 传给ios的参数为json对象，
+           * @param callback 回调函数
+           */
         callhandler(name, data, callback) {
             let args = [...arguments]
             typeof args[1] === 'function' ? args.splice(1, 0, {}) : args
@@ -205,6 +211,11 @@ export const bridge = (() => {
                 bridge.callHandler(...args)
             })
         },
+         /**
+           * h5 注册方法由 ios调用
+           * @param name     方法名
+           * @param callback 回调函数
+           */
         registerhandler(name, callback) {
             setupWebViewJavascriptBridge(function (bridge) {
                 bridge.registerHandler(name, function (data, responseCallback) {
