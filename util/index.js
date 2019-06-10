@@ -119,16 +119,12 @@ export const timeChunk = (ary, fn, count, inerval) => {
                 fn(obj)
             }
         }
-
-    return () => {
         timer = setInterval(() => {
             if (ary.length === 0) {
                 return clearInterval(timer)
             }
             start()
         }, inerval || 200)
-    }
-
 };
 
 /**
