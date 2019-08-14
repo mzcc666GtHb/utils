@@ -5,20 +5,20 @@
  */
 
 /**
- * rem布局(基于750)
+ * rem布局(默认750的设计稿)
  * 建议在页面最先引入
  * 可以保证在系统字体默认放大的情况下保持布局
  */
 
-export const rem = () => {
+export const rem = (draft = 750) => {
     const resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
         recalc = () => {
             let cW = document.documentElement.clientWidth,
                 iW = window.innerWidth,
                 w = Math.max(cW, iW),
                 fz
-            w = w > 750 ? 750 : w
-            fz = ~~(w / 7.5)
+            w = w > draft ? draft : w
+            fz = ~~(w / (draft / 100))
             document.getElementsByTagName('html')[0].style.cssText = 'font-size: ' + fz + 'px'
             document.getElementsByTagName('body')[0].style.cssText = 'font-size: ' + 16 + 'px'
 
@@ -119,12 +119,12 @@ export const timeChunk = (ary, fn, count, inerval) => {
                 fn(obj)
             }
         }
-        timer = setInterval(() => {
-            if (ary.length === 0) {
-                return clearInterval(timer)
-            }
-            start()
-        }, inerval || 200)
+    timer = setInterval(() => {
+        if (ary.length === 0) {
+            return clearInterval(timer)
+        }
+        start()
+    }, inerval || 200)
 };
 
 /**
@@ -194,12 +194,12 @@ export const bridge = (() => {
         }, 0)
     }
     return {
-         /**
-           * h5主动调用ios注册的方法
-           * @param name ios提供的方法
-           * @param data 传给ios的参数为json对象，
-           * @param callback 回调函数
-           */
+        /**
+         * h5主动调用ios注册的方法
+         * @param name ios提供的方法
+         * @param data 传给ios的参数为json对象，
+         * @param callback 回调函数
+         */
         callhandler(name, data, callback) {
             let args = [...arguments]
             typeof args[1] === 'function' ? args.splice(1, 0, {}) : args
@@ -207,11 +207,11 @@ export const bridge = (() => {
                 bridge.callHandler(...args)
             })
         },
-         /**
-           * h5 注册方法由 ios调用
-           * @param name     方法名
-           * @param callback 回调函数
-           */
+        /**
+         * h5 注册方法由 ios调用
+         * @param name     方法名
+         * @param callback 回调函数
+         */
         registerhandler(name, callback) {
             setupWebViewJavascriptBridge(function (bridge) {
                 bridge.registerHandler(name, function (data, responseCallback) {
