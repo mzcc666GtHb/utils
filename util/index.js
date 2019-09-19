@@ -228,7 +228,6 @@ export const bridge = (() => {
  * @param {Object} key
  */
 
-
 export const getQueryString = (key) => {
     let search = window.location.search;
     if (window.location.indexOf('?') === -1) return null; //如果url中没有传参直接返回空
@@ -246,3 +245,18 @@ export const getQueryString = (key) => {
     }
 }
 
+
+/**
+ * 通过a标签下载
+ * @param
+ */
+export const downloadFileA = (url) => {
+    const aLink = document.createElement('a')
+    const evt = document.createEvent('MouseEvents')
+    evt.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
+    aLink.setAttribute('download', '')
+    aLink.href = url
+    aLink.dispatchEvent(evt)
+    aLink.remove()
+    return aLink.href;
+}
