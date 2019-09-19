@@ -221,3 +221,28 @@ export const bridge = (() => {
         }
     }
 })()
+
+
+/**
+ * 解析URL传参
+ * @param {Object} key
+ */
+
+
+export const getQueryString = (key) => {
+    let search = window.location.search;
+    if (window.location.indexOf('?') === -1) return null; //如果url中没有传参直接返回空
+    //key存在先通过search取值如果取不到就通过hash来取
+    search = search.substr(1) || window.location.hash.split("?")[1];
+
+    if (search) {
+        var reg = new RegExp("(^|&)" + key + "=([^&]*)(&|$)");
+        var r = search.match(reg);
+        if (r != null) {
+            return decodeURIComponent(r[2]);
+        } else {
+            return null;
+        }
+    }
+}
+
