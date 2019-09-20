@@ -260,3 +260,218 @@ export const downloadFileA = (url) => {
     aLink.remove()
     return aLink.href;
 }
+
+
+export const snowFalling = {
+    inserted(el, bind) {
+        let type = bind.value, leafs, count
+        if (type === 'spring') {
+            leafs = [leaf0, leaf1, leaf2, leaf3, leaf4, leaf5, leaf6, leaf7, leaf8];
+            count = 200;
+        } else if (type === 'midAutomn') {
+            leafs = [midLeaf1, midLeaf2, midFlower1, midFlower2];
+            count = 10;
+        }
+
+
+        // Cross-browser-compliant
+        requestAnimationFrame = window.requestAnimationFrame ||
+            window.mozRequestAnimationFrame ||
+            window.webkitRequestAnimationFrame ||
+            window.msRequestAnimationFrame ||
+            window.oRequestAnimationFrame ||
+            function (callback) {
+                setTimeout(callback, 1000 / 60);
+            };
+
+        /**
+         * Snow Class
+         * @param {int}   x
+         * @param {int}   y
+         * @param {int}   radius
+         * @param {Function} fn     Formular to calculate x pos and y pos
+         */
+        function Snow(x, y, radius, fn, leafs) {
+            this.src = leafs[Math.floor(Math.random() * leafs.length)]
+            this.x = x;
+            this.y = y;
+            this.r = radius;
+            this.fn = fn;
+        }
+
+        Snow.prototype.update = function () {
+            this.x = this.fn.x(this.x, this.y);
+            this.y = this.fn.y(this.y, this.y);
+
+            if (this.x > window.innerWidth ||
+                this.x < 0 ||
+                this.y > window.innerHeight ||
+                this.y < 0
+            ) {
+                this.x = getRandom('x');
+                this.y = 0;
+            }
+        }
+        Snow.prototype.draw = function (cxt) {
+            var img = new Image();
+            img.src = this.src;
+            cxt.drawImage(img, this.x, this.y);
+            img = null;
+            // var grd = cxt.createRadialGradient (this.x, this.y, 0, this.x, this.y, this.r);
+            // grd.addColorStop(0, "rgba(255, 255, 255, 0.9)");
+            // grd.addColorStop(.5, "rgba(255, 255, 255, 0.5)");
+            // grd.addColorStop(1, "rgba(255, 255, 255, 0)");
+            // cxt.fillStyle = grd;
+            // cxt.fillRect (this.x - this.r, this.y - this.r, this.r * 2, this.r * 2);
+        }
+
+        /**
+         * Snowlist class
+         * Container to hold snow objects
+         */
+        let SnowList = function () {
+            this.list = [];
+        }
+        SnowList.prototype.push = function (snow) {
+            this.list.push(snow);
+        }
+        SnowList.prototype.update = function () {
+            for (var i = 0, len = this.list.length; i < len; i++) {
+                this.list[i].update();
+            }
+        }
+        SnowList.prototype.draw = function (cxt) {
+            for (var i = 0, len = this.list.length; i < len; i++) {
+                this.list[i].draw(cxt);
+            }
+        }
+        SnowList.prototype.get = function (i) {
+            return this.list[i];
+        }
+        SnowList.prototype.size = function () {
+            return this.list.length;
+        }
+
+        /**
+         * Generate random x-pos, y-pos or fn functions
+         * @param  {string} option x|y|fnx|fny
+         * @return {int|Function}
+         */
+        function getRandom(option) {
+            var ret, random;
+            switch (option) {
+                case 'x':
+                    ret = Math.random() * window.innerWidth;
+                    break;
+                case 'y':
+                    ret = Math.random() * window.innerHeight;
+                    break;
+                case 'r':
+                    ret = 2 + (Math.random() * 6);
+                    break;
+                case 'fnx':
+                    random = 27 + Math.random() * 100;
+                    ret = function (x, y) {
+                        return x + 0.5 * Math.sin(y / random);
+                    };
+                    break;
+                case 'fny':
+                    random = 0.4 + Math.random() * 1.4
+                    ret = function (x, y) {
+                        return y + random;
+                    };
+                    break;
+            }
+            return ret;
+        }
+
+        // Start snow
+        function startSnow() {
+            // Create canvas
+            var canvas = document.createElement('canvas'), cxt;
+            canvas.height = window.innerHeight;
+            canvas.width = window.innerWidth;
+            canvas.setAttribute('style', 'position: fixed;left: 0;top: 0;pointer-events: none;');
+            canvas.setAttribute('id', 'canvas_snow');
+            el.appendChild(canvas);
+            cxt = canvas.getContext('2d');
+            // Create snow objects
+            var snowList = new SnowList();
+            for (var i = 0; i < count; i++) {
+                var snow, randomX, randomY, randomR, randomFnx, randomFny;
+                randomX = getRandom('x');
+                randomY = getRandom('y');
+                randomR = getRandom('r');
+                randomFnx = getRandom('fnx');
+                randomFny = getRandom('fny');
+                snow = new Snow(randomX, randomY, randomR, {
+                    x: randomFnx,
+                    y: randomFny
+                }, leafs);
+                snow.draw(cxt);
+                snowList.push(snow);
+            }
+            // 递归调用
+            loop();
+
+            function loop() {
+                requestAnimationFrame(function () {
+                    cxt.clearRect(0, 0, canvas.width, canvas.height);
+                    snowList.update();
+                    snowList.draw(cxt);
+                    loop();
+                })
+            }
+        }
+
+        // 窗口变化
+        window.onresize = function () {
+            var canvasSnow = document.getElementById('canvas_snow');
+            canvasSnow.width = window.innerWidth;
+            canvasSnow.height = window.innerHeight;
+        }
+
+        startSnow();
+    }
+}
+
+const clickoutsideContext = '@@clickoutsideContext';
+export const clickoutside = {
+    /*
+       @param el 指令所绑定的元素
+       @param binding {Object}
+       @param vnode vue编译生成的虚拟节点
+   */
+    bind(el, binding, vnode) {
+        const documentHandler = function (e) {
+            // console.log(el)
+            // console.log(e.target);
+            // console.log(vnode);
+            // console.log(binding);
+
+            if (!vnode.context || el.contains(e.target)) {
+                return false;
+            }
+            if (binding.expression) {
+                vnode.context[el[clickoutsideContext].methodName](e)
+            } else {
+                el[clickoutsideContext].bindingFn(e);
+            }
+        }
+        el[clickoutsideContext] = {
+            documentHandler,
+            methodName: binding.expression,
+            bindingFn: binding.value
+        }
+        setTimeout(() => {
+            document.addEventListener('click', documentHandler);
+        }, 0)
+    },
+    update(el, binding) {
+        el[clickoutsideContext].methodName = binding.expression;
+        el[clickoutsideContext].bindingFn = binding.value;
+    },
+    unbind(el) {
+        document.removeEventListener('click', el[clickoutsideContext].documentHandler);
+    }
+}
